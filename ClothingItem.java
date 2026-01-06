@@ -8,14 +8,12 @@ public class ClothingItem {
         setBrand(brand);
         setPrice(price);
     }
-
     public void setName(String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException();
         }
         this.name = name;
     }
-
     public void setBrand(String brand) {
         if (brand == null || brand.isEmpty()) {
             throw new IllegalArgumentException();
@@ -29,15 +27,12 @@ public class ClothingItem {
         }
         this.price = price;
     }
-
     public String type() {
         return "Clothing Item";
     }
-
     public void show() {
         System.out.println(type() + ": " + name + ", " + brand + ", $" + price);
     }
-
     @Override
     public String toString() {
         return type() + ": " + name + ", " + brand + ", $" + price;
