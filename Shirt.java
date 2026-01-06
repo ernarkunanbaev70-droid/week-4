@@ -1,18 +1,22 @@
 public class Shirt extends ClothingItem {
     private String size;
-
-    public Shirt(int id, String name, String brand, double price, String size) {
-        super(id, name, brand, price);
+    
+    public Shirt(String name, String brand, double price, String size) {
+        super(name, brand, price);
+        setSize(size);
+    }
+    public void setSize(String size) {
+        if (size == null || size.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
         this.size = size;
     }
-
-    @Override
-    public void show() {
-        System.out.println("Shirt: " + name + " | size: " + size + " | " + price + " KZT");
-    }
-
     @Override
     public String type() {
         return "Shirt";
+    }
+    @Override
+    public void show() {
+        System.out.println(type() + ": " + name + ", " + brand + ", $" + price + ", Size: " + size);
     }
 }
