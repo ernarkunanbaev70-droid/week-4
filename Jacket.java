@@ -1,18 +1,19 @@
 public class Jacket extends ClothingItem {
     private boolean winter;
 
-    public Jacket(int id, String name, String brand, double price, boolean winter) {
-        super(id, name, brand, price);
+    public Jacket(String name, String brand, double price, boolean winter) {
+        super(name, brand, price);
         this.winter = winter;
     }
-
-    @Override
-    public void show() {
-        System.out.println("Jacket: " + name + " | winter: " + winter + " | " + price + " KZT");
+    public void setWinter(boolean winter) {
+        this.winter = winter;
     }
-
     @Override
     public String type() {
         return "Jacket";
+    }
+    @Override
+    public void show() {
+        System.out.println(type() + ": " + name + ", " + brand + ", $" + price + ", Winter: " + winter);
     }
 }
