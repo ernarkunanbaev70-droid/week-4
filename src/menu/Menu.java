@@ -1,6 +1,10 @@
 package menu;
 
 public interface Menu {
-    void displayMenu();
+    void show();
     void run();
+
+    void viewAllProducts();
+    void viewAllProductsUnsorted();
+    void viewClothingItems();
 }

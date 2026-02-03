@@ -1,17 +1,31 @@
 package model;
 
 public class Sale {
-
-    private Customer customer;
+    private int id;
     private Product product;
+    private int quantity;
 
-    public Sale(Customer customer, Product product) {
-        this.customer = customer;
+    public Sale(int id, Product product, int quantity) {
+        this.id = id;
         this.product = product;
+        setQuantity(quantity);
     }
 
-    public void showSale() {
-        System.out.print(customer.getName() + " bought ");
-        product.displayInfo();
+    public int getId() {
+        return id;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        if (quantity <= 0)
+            throw new IllegalArgumentException("Quantity <= 0");
+        this.quantity = quantity;
     }
 }
