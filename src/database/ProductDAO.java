@@ -12,7 +12,7 @@ import java.util.List;
 public class ProductDAO {
 
     public boolean add(ClothingItem item) {
-        String sql = "INSERT INTO products(name, price, size) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO products(name, price, size, category) VALUES (?, ?, ?, ?)";
 
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -20,6 +20,7 @@ public class ProductDAO {
             ps.setString(1, item.getName());
             ps.setDouble(2, item.getPrice());
             ps.setString(3, item.getSize());
+            ps.setString(4, "CLOTHING");
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -27,7 +28,6 @@ public class ProductDAO {
         }
         return false;
     }
-
     public Product findById(int id) {
         String sql = "SELECT * FROM products WHERE id = ?";
 
