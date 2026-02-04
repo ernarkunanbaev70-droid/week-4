@@ -2,8 +2,8 @@ package menu;
 
 import database.ProductDAO;
 import model.ClothingItem;
+import exception.ProductNotFoundException;
 import model.Product;
-
 import java.util.Scanner;
 
 public class MenuManager implements Menu {
@@ -97,9 +97,18 @@ public class MenuManager implements Menu {
         }
     }
 
-    private void delete() {
+private void delete() {
+    try {
         System.out.print("ID: ");
         int id = Integer.parseInt(sc.nextLine());
+
+        Product p = dao.findById(id);
+        if (p == null) {
+            throw new ProductNotFoundException("Product with id " + id + " not found");
+        }
+
+        System.out.println("You are going to delete:");
+        System.out.println(p.info());
 
         System.out.print("Are you sure? (yes/no): ");
         String confirm = sc.nextLine();
@@ -108,12 +117,16 @@ public class MenuManager implements Menu {
             if (dao.delete(id)) {
                 System.out.println("Deleted");
             } else {
-                System.out.println("Product not found");
+                System.out.println("Delete failed");
             }
         } else {
             System.out.println("Cancelled");
         }
+
+    } catch (ProductNotFoundException e) {
+        System.out.println(e.getMessage());
     }
+}
 
     private void searchByName() {
         System.out.print("Name: ");
