@@ -31,7 +31,7 @@ public class ProductDAO {
         }
     }
 
-    public void update(int id, double price) {
+    public boolean update(int id, double price) {
         String sql = "UPDATE products SET price=? WHERE id=?";
 
         try (Connection c = DatabaseConnection.getConnection();
@@ -39,50 +39,27 @@ public class ProductDAO {
 
             ps.setDouble(1, price);
             ps.setInt(2, id);
-            ps.executeUpdate();
+            return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
-            System.out.println("UPDATE ERROR");
+            return false;
         }
     }
 
-    public void delete(int id) {
+    public boolean delete(int id) {
         String sql = "DELETE FROM products WHERE id=?";
 
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-            ps.executeUpdate();
+            return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
-            System.out.println("DELETE ERROR");
+            return false;
         }
     }
 
-    public List<Product> getAllSortedByPrice() {
-        List<Product> list = new ArrayList<>();
-        String sql = "SELECT * FROM products ORDER BY price";
-
-        try (Connection c = DatabaseConnection.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                list.add(new ClothingItem(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getString("size")
-                ));
-            }
-
-        } catch (Exception e) {
-            System.out.println("SELECT ERROR");
-        }
-
-        return list;
-    }
     public List<Product> getAll() {
         List<Product> list = new ArrayList<>();
         String sql = "SELECT * FROM products";
@@ -101,22 +78,20 @@ public class ProductDAO {
             }
 
         } catch (Exception e) {
-            System.out.println("SELECT ALL ERROR");
         }
 
         return list;
     }
-    public List<Product> getClothingItemsSorted() {
+
+    public List<Product> searchByName(String name) {
         List<Product> list = new ArrayList<>();
-        String sql = """
-            SELECT * FROM products
-            WHERE category = 'Clothing'
-            ORDER BY price
-            """;
+        String sql = "SELECT * FROM products WHERE name ILIKE ? ORDER BY name";
 
         try (Connection c = DatabaseConnection.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, "%" + name + "%");
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 list.add(new ClothingItem(
@@ -128,10 +103,67 @@ public class ProductDAO {
             }
 
         } catch (Exception e) {
-            System.out.println("SELECT CLOTHING ERROR");
         }
 
         return list;
     }
 
+    public List<Product> searchByPriceRange(double min, double max) {
+        List<Product> list = new ArrayList<>();
+        String sql = """
+                SELECT * FROM products
+                WHERE price BETWEEN ? AND ?
+                ORDER BY price DESC
+                """;
+
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setDouble(1, min);
+            ps.setDouble(2, max);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new ClothingItem(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getString("size")
+                ));
+            }
+
+        } catch (Exception e) {
+        }
+
+        return list;
+    }
+
+    public List<Product> searchByMinPrice(double min) {
+        List<Product> list = new ArrayList<>();
+        String sql = """
+                SELECT * FROM products
+                WHERE price >= ?
+                ORDER BY price DESC
+                """;
+
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setDouble(1, min);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new ClothingItem(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getString("size")
+                ));
+            }
+
+        } catch (Exception e) {
+        }
+
+        return list;
+    }
 }
